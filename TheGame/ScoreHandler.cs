@@ -9,6 +9,6 @@ public static class ScoreHandler
 
     public static void AddScore(Accuracy acc)
     {
-        Score + acc;
+        Score += (int)acc;
     }
 }
