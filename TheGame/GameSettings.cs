@@ -16,4 +16,6 @@ public static class GameSettings
     {
         // Will check settings on initialization
     }
+
+    //static void SetSettings(){}
 }
