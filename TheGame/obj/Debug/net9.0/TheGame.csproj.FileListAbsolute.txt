@@ -1,0 +1,4 @@
+/FilesFilesFiles/code stuff/rythymmade/TheGame/obj/Debug/net9.0/TheGame.GeneratedMSBuildEditorConfig.editorconfig
+/FilesFilesFiles/code stuff/rythymmade/TheGame/obj/Debug/net9.0/TheGame.AssemblyInfoInputs.cache
+/FilesFilesFiles/code stuff/rythymmade/TheGame/obj/Debug/net9.0/TheGame.AssemblyInfo.cs
+/FilesFilesFiles/code stuff/rythymmade/TheGame/obj/Debug/net9.0/TheGame.csproj.CoreCompileInputs.cache

@@ -1,0 +1,11 @@
+public static void RunLanes(Note[][] map, AudioHandler audio, int bpm)
+	{
+		for (int i = 0; i < map.Length; i++)
+		{
+			int lane = i;
+			var lane_map = map[lane];
+
+			// Run each lane in a separate thread
+			Task.Run(() => RunLane(lane_map, audio, lane, bpm));
+		}
+	}
