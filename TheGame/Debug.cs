@@ -2,7 +2,7 @@ public static class Debug
 {
     static Debug()
     {
-        //Initiazile file access and file variables
+        //Placeholder class
     }
 
     public static void Log(string message)
