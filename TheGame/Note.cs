@@ -24,8 +24,12 @@ public class HeldNote : Note
     }
 }
 
-public class SpamNote : HeldNote
+public class SpamNote : Note
 {
-    public SpamNote(float time, float duration) : base(time, duration)
-    {}
+    public float Duration = 0f;
+
+    public SpamNote(float time, float duration) : base(time)
+    {
+        this.Duration = duration;
+    }
 }
