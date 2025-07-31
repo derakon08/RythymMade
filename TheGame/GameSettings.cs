@@ -12,6 +12,15 @@ public static class GameSettings
         { Accuracy.Impossible, ToleranceImpossible }
     };
 
+    /* public static Dictionary<Input, int>{
+        {Input.Key('S'), 0},
+        {Input.Key('D'), 0},
+        {Input.Key('F'), 0},
+        {Input.Key('J'), 0},
+        {Input.Key('K'), 0},
+        {Input.Key('L'), 0},
+    } */
+
     static GameSettings()
     {
         // Will check settings on initialization
