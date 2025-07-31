@@ -7,11 +7,12 @@ public class Lane
 	//Info variables
 	readonly Dictionary<Accuracy, float> Tolerance = GameSettings.Tolerance;
 	readonly AudioHandler Audio; //Fix once we're in unity
-	readonly Note[] LaneMap;
+	readonly Note[] LaneMap; //Note.Time is in absolute beats, so if i get confused again i'm gonna throw a fit.
+	//In the map, the note is obviously measured in absolute, otherwise i wouldn't know where it goes.
 	readonly int BPM;
 	readonly int LaneNumber;
 
-	public Queue<float> PlayerInputs = new();
+	public Queue<float> PlayerInputs = new(); //So it's gonnna be Time, but then how do i check if they released the key???????? AHG
 	float NoteToCheck = -1f;
 	int SongMapIterator = 0; //used by MoveToNextNote
 	
@@ -101,7 +102,7 @@ public class Lane
 				 PlayerInputs.Peek() > NoteToCheck - 16f)
 		{
 			ScoreHandler.AddScore(Accuracy.Miss);
-			MoveToNextNote(no);
+			MoveToNextNote(yes);
 		}
 	}
 
@@ -131,7 +132,7 @@ public class Lane
 				 PlayerInputs.Peek() > NoteToCheck - 16f)
 		{
 			ScoreHandler.AddScore(Accuracy.Miss);
-			MoveToNextNote(no);
+			MoveToNextNote(yes);
 		}
 	}
 
