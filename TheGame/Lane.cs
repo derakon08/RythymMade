@@ -14,6 +14,7 @@ public class Lane
 
 	public Queue<float> PlayerInputs = new(); //So it's gonnna be Time, but then how do i check if they released the key???????? AHG
 	float NoteToCheck = -1f;
+	public bool IsHeld = false;
 	int SongMapIterator = 0; //used by MoveToNextNote
 	
 	public Lane(int lane, Note[] lane_map, AudioHandler audio, int bpm)

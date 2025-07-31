@@ -12,7 +12,7 @@ public static class GameSettings
         { Accuracy.Impossible, ToleranceImpossible }
     };
 
-    /* public static Dictionary<Input, int>{
+    /* public static Dictionary<Input, int> KeyBinds{
         {Input.Key('S'), 0},
         {Input.Key('D'), 0},
         {Input.Key('F'), 0},

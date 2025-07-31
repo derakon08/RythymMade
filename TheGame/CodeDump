@@ -1,8 +1,8 @@
 
-private void Update() { //Called each time there's an input
-	if (input.GetKeyDown)
+private void Update() {
+	if (GameSettings.KeyBinds.ContainsKey(Input.GetKey()))
 	{
-		SomeLane.PlayerInputs.Enqueue(CurrentBeatTime - NoteToCheck);
-		SomeLane.IsHeld = true;
+		LanesRunning[GameSettings.KeyBinds[Input.GetKey()]].IsHeld = Input.GetKeyUp();
+		LanesRunning[GameSettings[Input.GetKey()]].PlayerInputs.Queue(BeatsTranscurred);
 	}
 }
