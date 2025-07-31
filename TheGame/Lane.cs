@@ -44,7 +44,7 @@ public class Lane
 			float SongTranscurred = Audio.SpmTime + 0.0167f;  // Assume 60 FPS, increment by ~1 frame per loop (~16.67ms) -chatgpt
 			float BeatsTranscurred = SongTranscurred * BPM / 60; //this is the time inside the game, base everything off of this or your eyes pop out
 
-			if (BeatsTranscurred > NoteToCheck + 1.5f)
+			if (BeatsTranscurred > NoteToCheck + 1.5f && PlayerInputs.Count != 0)
 			{
 				//miss lol
 				ScoreHandler.AddScore(Accuracy.Miss);
@@ -108,7 +108,7 @@ public class Lane
 
 	private void HeldHandler()
 	{
-		var InputTime = Math.Abs(PlayerInputs.Peek() - NoteToCheck);
+		/* var InputTime = Math.Abs(PlayerInputs.Peek() - NoteToCheck);
 
 		if (InputTime < Tolerance[Accuracy.Impossible])
 		{
@@ -133,7 +133,7 @@ public class Lane
 		{
 			ScoreHandler.AddScore(Accuracy.Miss);
 			MoveToNextNote(yes);
-		}
+		} */
 	}
 
 	private void SpamHandler()
