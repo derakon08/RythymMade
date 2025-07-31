@@ -53,10 +53,6 @@ public class Lane
 
 				switch (CurrentNote)
 				{
-					case FlickerNote:
-						FlickerHandler();
-						break;
-
 					case HeldNote:
 						HeldHandler();
 						break;
@@ -105,28 +101,63 @@ public class Lane
 		}
 	}
 
-	private void FlickerHandler()
-	{
-		//Placeholder for flicker note handling
-	}
-
 	private void HeldHandler()
 	{
-		//Placeholder for held note handling
+		var InputTime = Math.Abs(PlayerInputs.Peek() - NoteToCheck);
+
+		if (InputTime < Tolerance[Accuracy.Impossible])
+		{
+			ScoreHandler.AddScore(Accuracy.Impossible);
+			MoveToNextNote(true);
+		}
+
+		else if (InputTime < Tolerance[Accuracy.Very_Good])
+		{
+			ScoreHandler.AddScore(Accuracy.Very_Good);
+			MoveToNextNote(true);
+		}
+
+		else if (InputTime < Tolerance[Accuracy.Good])
+		{
+			ScoreHandler.AddScore(Accuracy.Good);
+			MoveToNextNote(true);
+		}
+
+		else if (PlayerInputs.Peek() < NoteToCheck + 16f ||
+				 PlayerInputs.Peek() < NoteToCheck - 16f)
+		{
+			ScoreHandler.AddScore(Accuracy.Miss);
+			MoveToNextNote(false);
+		}
 	}
 
 	private void SpamHandler()
 	{
-		//Placeholder for spam note handling
+		float SongTranscurred = Audio.SpmTime + 0.0167f;  // Assume 60 FPS, increment by ~1 frame per loop (~16.67ms) -chatgpt
+		float BeatsTranscurred = SongTranscurred * BPM / 60; //this is the time inside the game, base everything off of this or your eyes pop out
+		HeldNote CurrentNote = (HeldNote)LaneMap[SongMapIterator];
+
+		while (BeatsTranscurred < CurrentNote.Time + CurrentNote.Duration)
+		{
+			if (PlayerInputs.Count != 0)
+			{
+				//Avoid checking for key release
+				ScoreHandler.AddScore(Accuracy.Impossible);
+				MoveToNextNote(true, true);	
+			}
+		}
 	}
 
-	void MoveToNextNote(bool pop)
-			{
-				SongMapIterator++;
-				NoteToCheck = LaneMap[SongMapIterator].Time;
+	void MoveToNextNote(bool pop, bool Hold = false)
+	{
+		if (!Hold)
+		{
+			SongMapIterator++;
+			NoteToCheck = LaneMap[SongMapIterator].Time;
+		}
 
-				if (pop) { PlayerInputs.Dequeue(); }
-			}
+		if (pop) { PlayerInputs.Dequeue(); }
+	}
 
 	void EndGame()
 	{
