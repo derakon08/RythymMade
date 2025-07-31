@@ -1,5 +1,9 @@
 public class Lane
 {
+	//Don't mind me
+	const bool yes = true;
+	const bool no = false;
+
 	//Info variables
 	readonly Dictionary<Accuracy, float> Tolerance = GameSettings.Tolerance;
 	readonly AudioHandler Audio; //Fix once we're in unity
@@ -43,7 +47,7 @@ public class Lane
 			{
 				//miss lol
 				ScoreHandler.AddScore(Accuracy.Miss);
-				MoveToNextNote(false);
+				MoveToNextNote(no);
 			}
 
 			if (PlayerInputs.Count != 0)
@@ -78,26 +82,26 @@ public class Lane
 		if (InputTime < Tolerance[Accuracy.Impossible])
 		{
 			ScoreHandler.AddScore(Accuracy.Impossible);
-			MoveToNextNote(true);
+			MoveToNextNote(yes);
 		}
 
 		else if (InputTime < Tolerance[Accuracy.Very_Good])
 		{
 			ScoreHandler.AddScore(Accuracy.Very_Good);
-			MoveToNextNote(true);
+			MoveToNextNote(yes);
 		}
 
 		else if (InputTime < Tolerance[Accuracy.Good])
 		{
 			ScoreHandler.AddScore(Accuracy.Good);
-			MoveToNextNote(true);
+			MoveToNextNote(yes);
 		}
 
 		else if (PlayerInputs.Peek() < NoteToCheck + 16f ||
-				 PlayerInputs.Peek() < NoteToCheck - 16f)
+				 PlayerInputs.Peek() > NoteToCheck - 16f)
 		{
 			ScoreHandler.AddScore(Accuracy.Miss);
-			MoveToNextNote(false);
+			MoveToNextNote(no);
 		}
 	}
 
@@ -108,26 +112,26 @@ public class Lane
 		if (InputTime < Tolerance[Accuracy.Impossible])
 		{
 			ScoreHandler.AddScore(Accuracy.Impossible);
-			MoveToNextNote(true);
+			MoveToNextNote(yes);
 		}
 
 		else if (InputTime < Tolerance[Accuracy.Very_Good])
 		{
 			ScoreHandler.AddScore(Accuracy.Very_Good);
-			MoveToNextNote(true);
+			MoveToNextNote(yes);
 		}
 
 		else if (InputTime < Tolerance[Accuracy.Good])
 		{
 			ScoreHandler.AddScore(Accuracy.Good);
-			MoveToNextNote(true);
+			MoveToNextNote(yes);
 		}
 
 		else if (PlayerInputs.Peek() < NoteToCheck + 16f ||
-				 PlayerInputs.Peek() < NoteToCheck - 16f)
+				 PlayerInputs.Peek() > NoteToCheck - 16f)
 		{
 			ScoreHandler.AddScore(Accuracy.Miss);
-			MoveToNextNote(false);
+			MoveToNextNote(no);
 		}
 	}
 
@@ -139,7 +143,7 @@ public class Lane
 
 		while (BeatsTranscurred < CurrentNote.Time + CurrentNote.Duration)
 		{
-			if (PlayerInputs.Count != 0)
+			if (PlayerInputs.Count != 0) // || PlayerInputs.Peek() != Input.KeyUp or such
 			{
 				//Avoid checking for key release
 				ScoreHandler.AddScore(Accuracy.Impossible);
