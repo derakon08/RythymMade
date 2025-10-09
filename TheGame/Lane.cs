@@ -6,6 +6,7 @@ public class Lane //Destroy me if no map is playing
 	readonly float good = GameSettings.Tolerance[Accuracy.Good];
 	readonly AudioHandler audio; //Fix once we're in unity
 	readonly Note[] map;
+	Note nextNote;
 	readonly int BPM;
 
  	//used by MapIterator
@@ -22,6 +23,8 @@ public class Lane //Destroy me if no map is playing
 		this.audio = audio; //Fix once we're in unity
 		this.map = map;
 		BPM = bpm;
+
+		nextNote = MapIterator();
 	}
 
 	public void updaet() //of sorts
@@ -30,7 +33,6 @@ public class Lane //Destroy me if no map is playing
 		while (audio.SongPlaying && !forceEnd)
 		{
 			float totalBeats = audio.SpmTime * BPM / 60;
-			var nextNote = MapIterator();
 
 			if (totalBeats > nextNote.Time + 1.5f)
 			{
@@ -49,9 +51,9 @@ public class Lane //Destroy me if no map is playing
 		//Game.EndGame();
 	}
 
-	private void Score(float currentBeat, float noteToCheck)
+	private void Score(float currentBeat)
 	{
-		float inputTime = Math.Abs(currentBeat - noteToCheck);
+		float inputTime = Math.Abs(currentBeat - nextNote.time);
 
 		if (inputTime <= impossible)
 		{
