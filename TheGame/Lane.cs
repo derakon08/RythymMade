@@ -14,7 +14,11 @@ public class Lane //Destroy me if no map is playing
 
 	public Lane(Note[] map, AudioHandler audio, int bpm)
 	{
-		if (map.Length < 0) Debug.Log("At least one lane is empty");
+		if (map.Length < 0)
+		{
+			forceEnd = true;
+			Debug.Log("At least one lane is empty");
+		}
 		this.audio = audio; //Fix once we're in unity
 		this.map = map;
 		BPM = bpm;
