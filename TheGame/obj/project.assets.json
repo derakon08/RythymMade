@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/FilesFilesFiles/code stuff/repo/RythymMade/TheGame/TheGame.csproj",
+      "projectUniqueName": "/FilesFilesFiles/code-stuff/repo/RythymMade/TheGame/TheGame.csproj",
       "projectName": "TheGame",
-      "projectPath": "/FilesFilesFiles/code stuff/repo/RythymMade/TheGame/TheGame.csproj",
+      "projectPath": "/FilesFilesFiles/code-stuff/repo/RythymMade/TheGame/TheGame.csproj",
       "packagesPath": "/home/dera/.nuget/packages/",
-      "outputPath": "/FilesFilesFiles/code stuff/repo/RythymMade/TheGame/obj/",
+      "outputPath": "/FilesFilesFiles/code-stuff/repo/RythymMade/TheGame/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/dera/.nuget/NuGet/NuGet.Config"
@@ -65,7 +65,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

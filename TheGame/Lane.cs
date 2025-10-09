@@ -1,174 +1,82 @@
-public class Lane
+public class Lane //Destroy me if no map is playing
 {
-	//Don't mind me
-	const bool yes = true;
-	const bool no = false;
-
 	//Info variables
-	readonly Dictionary<Accuracy, float> Tolerance = GameSettings.Tolerance;
-	readonly AudioHandler Audio; //Fix once we're in unity
-	readonly Note[] LaneMap; //Note.Time is in absolute beats, so if i get confused again i'm gonna throw a fit.
-	//In the map, the note is obviously measured in absolute, otherwise i wouldn't know where it goes.
+	readonly float impossible = GameSettings.Tolerance[Accuracy.Impossible];
+	readonly float veryGood = GameSettings.Tolerance[Accuracy.Very_Good];
+	readonly float good = GameSettings.Tolerance[Accuracy.Good];
+	readonly AudioHandler audio; //Fix once we're in unity
+	readonly Note[] map;
 	readonly int BPM;
-	readonly int LaneNumber;
 
-	public Queue<float> PlayerInputs = new(); //So it's gonnna be Time, but then how do i check if they released the key???????? AHG
-	float NoteToCheck = -1f;
-	public bool IsHeld = false;
-	int SongMapIterator = 0; //used by MoveToNextNote
-	
-	public Lane(int lane, Note[] lane_map, AudioHandler audio, int bpm)
+ 	//used by MapIterator
+	int mapIterator = -1;
+	private bool forceEnd = false;
+
+	public Lane(Note[] map, AudioHandler audio, int bpm)
 	{
-		try
-		{
-			NoteToCheck = lane_map[0].Time;
-		}
-
-		catch (IndexOutOfRangeException ex)
-		{
-			Debug.Log("Empty Map for lane " + lane + ": " + ex.Message);
-			Debug.Log("Shutting Game Down"); //This should be logged outside the lanes script
-			EndGame();
-		}
-
-		LaneNumber = lane;
-		LaneMap = lane_map;
-		Audio = audio;
+		if (map.Length < 0) Debug.Log("At least one lane is empty");
+		this.audio = audio; //Fix once we're in unity
+		this.map = map;
 		BPM = bpm;
 	}
 
-	public void RunLane() //AudioHandler better be by reference i swear to *BONK*
+	public void updaet() //of sorts
 	{
 
-		while (SongMapIterator <= LaneMap.Length)
+		while (audio.SongPlaying && !forceEnd)
 		{
-			float SongTranscurred = Audio.SpmTime + 0.0167f;  // Assume 60 FPS, increment by ~1 frame per loop (~16.67ms) -chatgpt
-			float BeatsTranscurred = SongTranscurred * BPM / 60; //this is the time inside the game, base everything off of this or your eyes pop out
+			float totalBeats = audio.SpmTime * BPM / 60;
+			var nextNote = MapIterator();
 
-			if (BeatsTranscurred > NoteToCheck + 1.5f && PlayerInputs.Count != 0)
+			if (totalBeats > nextNote.Time + 1.5f)
 			{
 				//miss lol
 				ScoreHandler.AddScore(Accuracy.Miss);
-				MoveToNextNote(no);
+				MapIterator();
 			}
+		
 
-			if (PlayerInputs.Count != 0)
-			{
-				//print the input queue length here
-				var CurrentNote = LaneMap[SongMapIterator];
+			
 
-				switch (CurrentNote)
-				{
-					case HeldNote:
-						HeldHandler();
-						break;
-
-					case SpamNote:
-						SpamHandler();
-						break;
-
-					default:
-						NormalHandler();
-						break;
-				}
-			}
+				
+			
 		}
 
-		EndGame();
+		//Game.EndGame();
 	}
 
-	private void NormalHandler()
+	private void Score(float currentBeat, float noteToCheck)
 	{
-		var InputTime = Math.Abs(PlayerInputs.Peek() - NoteToCheck);
+		float inputTime = Math.Abs(currentBeat - noteToCheck);
 
-		if (InputTime < Tolerance[Accuracy.Impossible])
+		if (inputTime <= impossible)
 		{
 			ScoreHandler.AddScore(Accuracy.Impossible);
-			MoveToNextNote(yes);
 		}
-
-		else if (InputTime < Tolerance[Accuracy.Very_Good])
+		else if (inputTime <= veryGood)
 		{
 			ScoreHandler.AddScore(Accuracy.Very_Good);
-			MoveToNextNote(yes);
 		}
-
-		else if (InputTime < Tolerance[Accuracy.Good])
+		else if (inputTime <= good)
 		{
 			ScoreHandler.AddScore(Accuracy.Good);
-			MoveToNextNote(yes);
 		}
-
-		else if (PlayerInputs.Peek() < NoteToCheck + 16f ||
-				 PlayerInputs.Peek() > NoteToCheck - 16f)
+		else
 		{
 			ScoreHandler.AddScore(Accuracy.Miss);
-			MoveToNextNote(yes);
 		}
 	}
 
-	private void HeldHandler()
+	private Note MapIterator()
 	{
-		/* var InputTime = Math.Abs(PlayerInputs.Peek() - NoteToCheck);
+		mapIterator++;
 
-		if (InputTime < Tolerance[Accuracy.Impossible])
+		if (mapIterator + 1 > map.Length) //end after this note
 		{
-			ScoreHandler.AddScore(Accuracy.Impossible);
-			MoveToNextNote(yes);
+			forceEnd = true;
 		}
 
-		else if (InputTime < Tolerance[Accuracy.Very_Good])
-		{
-			ScoreHandler.AddScore(Accuracy.Very_Good);
-			MoveToNextNote(yes);
-		}
-
-		else if (InputTime < Tolerance[Accuracy.Good])
-		{
-			ScoreHandler.AddScore(Accuracy.Good);
-			MoveToNextNote(yes);
-		}
-
-		else if (PlayerInputs.Peek() < NoteToCheck + 16f ||
-				 PlayerInputs.Peek() > NoteToCheck - 16f)
-		{
-			ScoreHandler.AddScore(Accuracy.Miss);
-			MoveToNextNote(yes);
-		} */
-	}
-
-	private void SpamHandler()
-	{
-		float SongTranscurred = Audio.SpmTime + 0.0167f;  // Assume 60 FPS, increment by ~1 frame per loop (~16.67ms) -chatgpt
-		float BeatsTranscurred = SongTranscurred * BPM / 60; //this is the time inside the game, base everything off of this or your eyes pop out
-		HeldNote CurrentNote = (HeldNote)LaneMap[SongMapIterator];
-
-		while (BeatsTranscurred < CurrentNote.Time + CurrentNote.Duration)
-		{
-			if (PlayerInputs.Count != 0) // || PlayerInputs.Peek() != Input.KeyUp or such
-			{
-				//Avoid checking for key release
-				ScoreHandler.AddScore(Accuracy.Impossible);
-				MoveToNextNote(true, true);	
-			}
-		}
-	}
-
-	void MoveToNextNote(bool pop, bool Hold = false)
-	{
-		if (!Hold)
-		{
-			SongMapIterator++;
-			NoteToCheck = LaneMap[SongMapIterator].Time;
-		}
-
-		if (pop) { PlayerInputs.Dequeue(); }
-	}
-
-	void EndGame()
-	{
-		Debug.Log($"Shutting lane {LaneNumber} down");
-		//Signal to main to close song
+		return map[mapIterator];
 	}
 }
 

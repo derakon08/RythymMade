@@ -12,14 +12,10 @@ public static class GameSettings
         { Accuracy.Impossible, ToleranceImpossible }
     };
 
-    /* public static Dictionary<Input, int> KeyBinds{
-        {Input.Key('S'), 0},
-        {Input.Key('D'), 0},
-        {Input.Key('F'), 0},
-        {Input.Key('J'), 0},
-        {Input.Key('K'), 0},
-        {Input.Key('L'), 0},
-    } */
+    public static float OffSet = 0f;
+
+    public static Input[] Keys = { //I've got no idea, find this in debug file btw
+    };
 
     static GameSettings()
     {

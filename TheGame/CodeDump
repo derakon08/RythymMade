@@ -6,3 +6,21 @@ private void Update() {
 		LanesRunning[GameSettings[Input.GetKey()]].PlayerInputs.Queue(BeatsTranscurred);
 	}
 }
+
+
+private void SpamHandler()
+	{
+		float SongTranscurred = Audio.SpmTime + 0.0167f;  // change for delta time
+		float BeatsTranscurred = SongTranscurred * BPM / 60; //this is the time inside the game, base everything off of this or your eyes pop out
+		HeldNote CurrentNote = (HeldNote)LaneMap[SongMapIterator];
+
+		while (BeatsTranscurred < CurrentNote.Time + CurrentNote.Duration)
+		{
+			if (PlayerInputs.Count != 0) // || PlayerInputs.Peek() != Input.KeyUp or such
+			{
+				//Avoid checking for key release
+				ScoreHandler.AddScore(Accuracy.Impossible);
+				MoveToNextNote(true, true);
+			}
+		}
+	}
