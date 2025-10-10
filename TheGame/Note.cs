@@ -1,11 +1,6 @@
-public class Note
+public class Note(float time, float duration = 0.0f)
 {
-    public float time;
-    public float duration;
-
-    public Note(float time, float duration = 0.0f)
-    {
-        this.time = time;
-        this.duration = duration;
-    }
+    public float time = time;
+    public float duration = duration;
+    public bool isHeld;
 }
