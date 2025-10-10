@@ -6,54 +6,58 @@ public class Lane //Destroy me if no map is playing
 	readonly float good = GameSettings.Tolerance[Accuracy.Good];
 	readonly AudioHandler audio; //Fix once we're in unity
 	readonly Note[] map;
-	Note nextNote;
 	readonly int BPM;
 
- 	//used by MapIterator
+	float totalBeats;
+	Note nextNote;
+
 	int mapIterator = -1;
 	private bool forceEnd = false;
+	private bool isHeld = false;
 
-	public Lane(Note[] map, AudioHandler audio, int bpm)
-	{
-		if (map.Length < 0)
-		{
-			forceEnd = true;
-			Debug.Log("At least one lane is empty");
-		}
-		this.audio = audio; //Fix once we're in unity
-		this.map = map;
-		BPM = bpm;
-
-		nextNote = MapIterator();
-	}
-
-	public void updaet() //of sorts
+	public void Update() //of sorts
 	{
 
-		while (audio.SongPlaying && !forceEnd)
+		if (audio.SongPlaying && !forceEnd)
 		{
-			float totalBeats = audio.SpmTime * BPM / 60;
+			totalBeats = audio.SpmTime * BPM / 60;
 
-			if (totalBeats > nextNote.Time + 1.5f)
+			if (
+			(!isHeld && totalBeats > nextNote.time + good) ||
+			(isHeld && totalBeats > nextNote.time + nextNote.duration + good))
 			{
-				//miss lol
 				ScoreHandler.AddScore(Accuracy.Miss);
 				MapIterator();
 			}
-		
-
-			
-
-				
-			
 		}
 
-		//Game.EndGame();
+		//else Game.EndGame();
 	}
 
-	private void Score(float currentBeat)
+	public void Trigger(bool isKeyUp = false)
 	{
-		float inputTime = Math.Abs(currentBeat - nextNote.time);
+		if (nextNote.time - totalBeats > 3f) { return; }
+
+
+		if (nextNote.duration == 0)
+		{
+			Score();
+			MapIterator();
+			return;
+		}
+		else
+        {
+            if (isKeyUp)
+            {
+                
+            }
+        }
+        
+    }
+
+	private void Score()
+	{
+		float inputTime = Math.Abs(totalBeats - nextNote.time);
 
 		if (inputTime <= impossible)
 		{
@@ -73,7 +77,7 @@ public class Lane //Destroy me if no map is playing
 		}
 	}
 
-	private Note MapIterator()
+	private void MapIterator()
 	{
 		mapIterator++;
 
@@ -82,7 +86,26 @@ public class Lane //Destroy me if no map is playing
 			forceEnd = true;
 		}
 
-		return map[mapIterator];
+		nextNote = map[mapIterator];
+
+		return;
+	}
+
+	public Lane(Note[] map, AudioHandler audio, int bpm)
+	{
+		if (map.Length < 1)
+		{
+			forceEnd = true;
+			Debug.Log("At least one lane is empty");
+		}
+		else
+		{
+			this.audio = audio; //Fix once we're in unity
+			this.map = map;
+			BPM = bpm;
+
+            MapIterator();
+        }
 	}
 }
 
