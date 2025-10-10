@@ -7,13 +7,13 @@ public class Lane //Destroy me if no map is playing
 	readonly AudioHandler audio; //Fix once we're in unity
 	readonly Note[] map;
 	readonly int BPM;
+	readonly byte thisLane;
 
 	float totalBeats;
 	Note nextNote;
 
 	int mapIterator = -1;
 	private bool forceEnd = false;
-	private bool isHeld = false;
 
 	public void Update() //of sorts
 	{
@@ -23,15 +23,13 @@ public class Lane //Destroy me if no map is playing
 			totalBeats = audio.SpmTime * BPM / 60;
 
 			if (
-			(!isHeld && totalBeats > nextNote.time + good) ||
-			(isHeld && totalBeats > nextNote.time + nextNote.duration + good))
+			(!nextNote.isHeld && totalBeats > nextNote.time + good) ||
+			(nextNote.isHeld && totalBeats > nextNote.time + nextNote.duration + good))
 			{
-				ScoreHandler.AddScore(Accuracy.Miss);
+				Score(nextNote.time);
 				MapIterator();
 			}
 		}
-
-		//else Game.EndGame();
 	}
 
 	public void Trigger(bool isKeyUp = false)
@@ -39,25 +37,31 @@ public class Lane //Destroy me if no map is playing
 		if (nextNote.time - totalBeats > 3f) { return; }
 
 
-		if (nextNote.duration == 0)
+		if (!isKeyUp && nextNote.duration == 0)
 		{
-			Score();
+			Score(nextNote.time);
 			MapIterator();
 			return;
 		}
-		else
+		else if (nextNote.duration != 0)
         {
-            if (isKeyUp)
+			if (isKeyUp)
+			{
+				Score(nextNote.time + nextNote.duration);
+				MapIterator();
+			}
+            else
             {
-                
+				Score(nextNote.time);
+				nextNote.isHeld = true;
             }
         }
         
     }
 
-	private void Score()
+	private void Score(float beatToCheck)
 	{
-		float inputTime = Math.Abs(totalBeats - nextNote.time);
+		float inputTime = Math.Abs(totalBeats - beatToCheck);
 
 		if (inputTime <= impossible)
 		{
@@ -91,7 +95,7 @@ public class Lane //Destroy me if no map is playing
 		return;
 	}
 
-	public Lane(Note[] map, AudioHandler audio, int bpm)
+	public Lane(Note[] map, AudioHandler audio, int bpm, byte laneNumber)
 	{
 		if (map.Length < 1)
 		{
@@ -103,6 +107,7 @@ public class Lane //Destroy me if no map is playing
 			this.audio = audio; //Fix once we're in unity
 			this.map = map;
 			BPM = bpm;
+			thisLane = laneNumber;
 
             MapIterator();
         }
